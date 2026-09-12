@@ -13,11 +13,11 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: `Notes on Node.js, TypeScript, backend architecture and web development by ${siteConfig.name}.`,
+  description: `Notes on backend architecture, distributed systems and Node.js by ${siteConfig.name}.`,
   alternates: { canonical: "/blogs" },
   openGraph: {
     title: `Blog | ${siteConfig.name}`,
-    description: `Notes on Node.js, TypeScript, backend architecture and web development by ${siteConfig.name}.`,
+    description: `Notes on backend architecture, distributed systems and Node.js by ${siteConfig.name}.`,
     url: "/blogs",
     type: "website",
     images: [ogImageMeta],
@@ -68,7 +68,7 @@ export default async function BlogsPage() {
             Blog
           </h1>
           <p className="mt-4 text-zinc-400">
-            Notes on Node.js, TypeScript and backend architecture.
+            Notes on backend architecture, distributed systems and Node.js.
           </p>
         </div>
         <div className="w-full h-px bg-zinc-800" />

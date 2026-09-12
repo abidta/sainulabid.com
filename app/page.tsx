@@ -75,14 +75,13 @@ export default function Home() {
       <div className="hidden w-screen h-px animate-glow md:block animate-fade-right bg-gradient-to-r from-zinc-300/0 via-zinc-300/50 to-zinc-300/0" />
       <div className="my-16 text-center animate-fade-in">
         <h2 className="text-sm text-zinc-500 ">
-          Node.js and full stack developer based in Kerala, India. I build
-          backends and web applications with TypeScript, Express, MongoDB and
-          React —{" "}
+          I design and build backend systems — Node.js, TypeScript and
+          distributed architecture that holds up under load.{" "}
           <Link
             href="/projects"
             className="underline duration-500 hover:text-zinc-300"
           >
-            see what I&apos;ve built
+            See what I&apos;ve built
           </Link>
           .
         </h2>

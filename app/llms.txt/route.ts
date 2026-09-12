@@ -42,9 +42,9 @@ ${siteConfig.name} is a ${siteConfig.jobTitle} based in ${siteConfig.location.lo
 
 ## Pages
 
-- [Home](${siteConfig.url}): Overview of ${siteConfig.name} and current work.
-- [Projects](${siteConfig.url}/projects): Open source projects and web applications.
-- [Blog](${siteConfig.url}/blogs): Notes on Node.js, TypeScript and backend architecture.
+- [Home](${siteConfig.url}): Overview of ${siteConfig.name}, backend engineer and system architect.
+- [Projects](${siteConfig.url}/projects): Backend services, open source libraries and distributed systems.
+- [Blog](${siteConfig.url}/blogs): Notes on backend architecture, distributed systems and Node.js.
 - [Contact](${siteConfig.url}/contact): Email, GitHub and X/Twitter.
 
 ## Projects
