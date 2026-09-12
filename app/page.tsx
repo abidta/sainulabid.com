@@ -1,6 +1,8 @@
 import Link from "next/link";
 import React from "react";
 import Particles from "./components/particles";
+import { siteConfig } from "./lib/site";
+import { jsonLd } from "./lib/json-ld";
 
 const navigation = [
   { name: "Projects", href: "/projects" },
@@ -8,9 +10,46 @@ const navigation = [
   { name: "Blogs", href: "/blogs" },
 ];
 
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  image: `${siteConfig.url}/opengraph-image`,
+  jobTitle: siteConfig.jobTitle,
+  email: `mailto:${siteConfig.email}`,
+  description: siteConfig.description,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: siteConfig.location.locality,
+    addressCountry: siteConfig.location.country,
+  },
+  knowsAbout: siteConfig.skills,
+  sameAs: [
+    siteConfig.socials.github,
+    siteConfig.socials.twitter,
+    siteConfig.socials.website,
+  ],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  description: siteConfig.description,
+  publisher: { "@type": "Person", name: siteConfig.name, url: siteConfig.url },
+};
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen overflow-hidden bg-gradient-to-tl from-black via-zinc-600/20 to-black">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd([personSchema, websiteSchema]),
+        }}
+      />
       <nav className="my-16 animate-fade-in">
         <ul className="flex items-center justify-center gap-4">
           {navigation.map((item) => (
@@ -30,23 +69,24 @@ export default function Home() {
         quantity={100}
       />
       <h1 className="py-3.5 px-0.5 z-10 text-4xl text-transparent duration-1000 bg-white cursor-default text-edge-outline animate-title font-display sm:text-6xl md:text-9xl whitespace-nowrap bg-clip-text ">
-        Zainul Abid
+        {siteConfig.name}
       </h1>
 
       <div className="hidden w-screen h-px animate-glow md:block animate-fade-right bg-gradient-to-r from-zinc-300/0 via-zinc-300/50 to-zinc-300/0" />
       <div className="my-16 text-center animate-fade-in">
         <h2 className="text-sm text-zinc-500 ">
-          I'm building
+          Node.js and full stack developer based in Kerala, India. I build
+          backends and web applications with TypeScript, Express, MongoDB and
+          React —{" "}
           <Link
-            target="_blank"
-            href="https://test.dev"
+            href="/projects"
             className="underline duration-500 hover:text-zinc-300"
           >
-           test
-          </Link> to solve API authentication and authorization for developers.
+            see what I&apos;ve built
+          </Link>
+          .
         </h2>
       </div>
     </div>
   );
-
 }

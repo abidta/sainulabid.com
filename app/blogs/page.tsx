@@ -1,51 +1,74 @@
 import Link from "next/link";
 import React from "react";
+import type { Metadata } from "next";
 import { allBlogs } from "contentlayer/generated";
 import { Navigation } from "../components/nav";
 import { Card } from "../components/card";
 import { Article } from "./article";
-import { Redis } from "@upstash/redis";
+import { getViews } from "../lib/views";
+import { siteConfig, ogImageMeta } from "../lib/site";
 import { Eye } from "lucide-react";
 
-const redis = Redis.fromEnv();
-
 export const revalidate = 60;
-export default async function blogsPage() {
-  const views = (
-    await redis.mget<number[]>(
-      ...allBlogs.map((p) => ["pageviews", "blogs", p.slug].join(":")),
-    )
-  ).reduce((acc, v, i) => {
-    acc[allBlogs[i].slug] = v ?? 0;
-    return acc;
-  }, {} as Record<string, number>);
 
-  console.log(allBlogs, 'allBlogs')
-  const featured = allBlogs.find((blog) => blog.slug === "sample")!;
-//   const top2 = allBlogs.find((blog) => blog.slug === "planetfall")!;
-//   const top3 = allBlogs.find((blog) => blog.slug === "highstorm")!;
-  const sorted = allBlogs
+export const metadata: Metadata = {
+  title: "Blog",
+  description: `Notes on Node.js, TypeScript, backend architecture and web development by ${siteConfig.name}.`,
+  alternates: { canonical: "/blogs" },
+  openGraph: {
+    title: `Blog | ${siteConfig.name}`,
+    description: `Notes on Node.js, TypeScript, backend architecture and web development by ${siteConfig.name}.`,
+    url: "/blogs",
+    type: "website",
+    images: [ogImageMeta],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [ogImageMeta.url],
+  },
+};
+
+export default async function BlogsPage() {
+  const published = allBlogs
     .filter((p) => p.published)
-    .filter(
-      (blog) =>
-        blog.slug !== featured?.slug
-    )
     .sort(
       (a, b) =>
         new Date(b.date ?? Number.POSITIVE_INFINITY).getTime() -
         new Date(a.date ?? Number.POSITIVE_INFINITY).getTime(),
     );
 
+  const views = await getViews(
+    "blogs",
+    published.map((p) => p.slug),
+  );
+
+  const [featured, ...rest] = published;
+  const sorted = rest;
+
+  if (!featured) {
+    return (
+      <div className="relative pb-16">
+        <Navigation />
+        <div className="px-6 pt-20 mx-auto max-w-7xl lg:px-8 md:pt-24 lg:pt-32">
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            Blog
+          </h1>
+          <p className="mt-4 text-zinc-400">No posts published yet.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative pb-16">
       <Navigation />
       <div className="px-6 pt-20 mx-auto space-y-8 max-w-7xl lg:px-8 md:space-y-16 md:pt-24 lg:pt-32">
         <div className="max-w-2xl mx-auto lg:mx-0">
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
-            blogs
-          </h2>
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            Blog
+          </h1>
           <p className="mt-4 text-zinc-400">
-            Some of the blogs are from work and some are on my own time.
+            Notes on Node.js, TypeScript and backend architecture.
           </p>
         </div>
         <div className="w-full h-px bg-zinc-800" />

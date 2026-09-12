@@ -3,27 +3,27 @@ import { Inter } from "@next/font/google";
 import LocalFont from "@next/font/local";
 import { Metadata } from "next";
 import { Analytics } from "./components/analytics";
+import { siteConfig } from "./lib/site";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Zainul Abid",
-    template: "%s | Zainul Abid",
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: "Backend Developer, Full Stack Engineer, MERN Stack, SQL Database Management, Freelance Developer, Web Application Development, Node.js, React.js, MongoDB, Express.js, JavaScript, TypeScript",
+  description: siteConfig.description,
+  keywords: [...siteConfig.skills],
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Zainul Abid",
-    description:
-      "Backend Developer, Full Stack Engineer, MERN Stack, SQL Database Management, Freelance Developer, Web Application Development, Node.js, React.js, MongoDB, Express.js, JavaScript, TypeScript",
-    url: "https://zainulabid.coom",
-    siteName: "zainulabid.com",
-    images: [
-      {
-        url: "https://chronark.com/og.png",
-        width: 1920,
-        height: 1080,
-      },
-    ],
-    locale: "en-US",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    locale: "en_US",
     type: "website",
   },
   robots: {
@@ -38,13 +38,13 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: "Zainul Abid",
     card: "summary_large_image",
-  },
-  icons: {
-    shortcut: "/favicon.png",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    creator: siteConfig.twitterHandle,
   },
 };
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
