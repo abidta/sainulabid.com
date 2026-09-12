@@ -13,11 +13,11 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: `Open source projects and web applications built by ${siteConfig.name} with Node.js, TypeScript, React and MongoDB.`,
+  description: `Backend services, libraries and distributed systems built by ${siteConfig.name} with Node.js, TypeScript and Fastify.`,
   alternates: { canonical: "/projects" },
   openGraph: {
     title: `Projects | ${siteConfig.name}`,
-    description: `Open source projects and web applications built by ${siteConfig.name}.`,
+    description: `Backend services, libraries and distributed systems built by ${siteConfig.name}.`,
     url: "/projects",
     type: "website",
     images: [ogImageMeta],
@@ -69,7 +69,7 @@ export default async function ProjectsPage() {
             Projects
           </h1>
           <p className="mt-4 text-zinc-400">
-            Some of the projects are from work and some are on my own time.
+            Backend services, open source libraries and systems I have designed and shipped.
           </p>
         </div>
         <div className="w-full h-px bg-zinc-800" />

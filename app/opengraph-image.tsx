@@ -48,7 +48,7 @@ export default function OpengraphImage() {
             color: "#71717a",
           }}
         >
-          Node.js · TypeScript · Express · MongoDB · React
+          Node.js · TypeScript · Distributed Systems · APIs
         </div>
         <div
           style={{
