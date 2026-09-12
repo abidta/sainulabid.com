@@ -41,3 +41,4 @@ next-env.d.ts
 .env
 # generated SEO reports
 /seo-report/
+.env*

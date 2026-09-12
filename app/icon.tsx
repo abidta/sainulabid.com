@@ -1,15 +1,12 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { ImageResponse } from "next/server";
+import { displayFontName, fontOptions, loadDisplayFont } from "./lib/font";
 
 export const size = { width: 256, height: 256 };
 export const contentType = "image/png";
 
-const calSans = readFileSync(
-  join(process.cwd(), "public/fonts/CalSans-SemiBold.ttf"),
-);
+export default function Icon() {
+  const font = loadDisplayFont();
 
-export default async function Icon() {
   return new ImageResponse(
     (
       <div
@@ -22,7 +19,8 @@ export default async function Icon() {
           background: "#09090b",
           color: "#fafafa",
           fontSize: 180,
-          fontFamily: "Cal Sans",
+          fontWeight: 700,
+          fontFamily: font ? displayFontName : undefined,
           letterSpacing: "-0.05em",
         }}
       >
@@ -31,13 +29,7 @@ export default async function Icon() {
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Cal Sans",
-          data: calSans,
-          style: "normal",
-        },
-      ],
+      fonts: fontOptions(font),
     },
   );
 }

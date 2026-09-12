@@ -1,17 +1,14 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { ImageResponse } from "next/server";
 import { siteConfig } from "./lib/site";
+import { fontOptions, loadDisplayFont } from "./lib/font";
 
 export const alt = `${siteConfig.name} — ${siteConfig.jobTitle}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const calSans = readFileSync(
-  join(process.cwd(), "public/fonts/CalSans-SemiBold.ttf"),
-);
+export default function OpengraphImage() {
+  const font = loadDisplayFont();
 
-export default async function OpengraphImage() {
   return new ImageResponse(
     (
       <div
@@ -66,13 +63,7 @@ export default async function OpengraphImage() {
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Cal Sans",
-          data: calSans,
-          style: "normal",
-        },
-      ],
+      fonts: fontOptions(font),
     },
   );
 }
