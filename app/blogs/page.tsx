@@ -9,6 +9,7 @@ import { getViews } from "../lib/views";
 import { hasPublishedBlogs } from "../lib/content";
 import { siteConfig, ogImageMeta } from "../lib/site";
 import { Eye } from "lucide-react";
+import { showViews } from "../lib/view-display";
 
 export const revalidate = 60;
 
@@ -95,12 +96,14 @@ export default async function BlogsPage() {
                       <span>SOON</span>
                     )}
                   </div>
-                  <span className="flex items-center gap-1 text-xs text-zinc-500">
-                    <Eye className="w-4 h-4" />{" "}
-                    {Intl.NumberFormat("en-US", { notation: "compact" }).format(
-                      views[featured.slug] ?? 0,
-                    )}
-                  </span>
+                  {showViews(views[featured.slug]) && (
+                  	<span className="flex items-center gap-1 text-xs text-zinc-500">
+	                    <Eye className="w-4 h-4" />{" "}
+	                    {Intl.NumberFormat("en-US", { notation: "compact" }).format(
+	                      views[featured.slug] ?? 0,
+	                    )}
+	                  </span>
+                  )}
                 </div>
 
                 <h2

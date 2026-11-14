@@ -15,7 +15,7 @@ export const personRef = {
   "@type": "Person",
   "@id": personId,
   name: siteConfig.name,
-  url: siteConfig.url,
+  url: `${siteConfig.url}/`,
 };
 
 export const personNode = {
@@ -27,7 +27,7 @@ export const personNode = {
   address: {
     "@type": "PostalAddress",
     addressRegion: siteConfig.location.region,
-    addressCountry: siteConfig.location.country,
+    addressCountry: siteConfig.location.countryCode,
   },
   knowsAbout: siteConfig.skills,
   sameAs,

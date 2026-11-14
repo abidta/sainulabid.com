@@ -6,6 +6,11 @@ const nextConfig = {
 	experimental: {
 		mdxRs: true,
 	},
+	// Browsers and some crawlers request /favicon.ico directly. Serve the
+	// generated app/icon.tsx PNG there instead of a 404.
+	async rewrites() {
+		return [{ source: "/favicon.ico", destination: "/icon" }];
+	},
 	webpack(config) {
 		        config.watchOptions = {
           ignored: [
