@@ -1,35 +1,11 @@
-import { ImageResponse } from "next/server";
-import { displayFontName, fontOptions, loadDisplayFont } from "./lib/font";
+import { brandIcon } from "./lib/brand-icon";
 
-export const size = { width: 256, height: 256 };
+// Google Search shows a site's favicon next to its results. Its guidelines
+// ask for a square icon, larger than 48x48; 192 is a multiple of 48, which
+// older versions of the guideline required.
+export const size = { width: 192, height: 192 };
 export const contentType = "image/png";
 
 export default function Icon() {
-  const font = loadDisplayFont();
-
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#09090b",
-          color: "#fafafa",
-          fontSize: 180,
-          fontWeight: 700,
-          fontFamily: font ? displayFontName : undefined,
-          letterSpacing: "-0.05em",
-        }}
-      >
-        S
-      </div>
-    ),
-    {
-      ...size,
-      fonts: fontOptions(font),
-    },
-  );
+  return brandIcon(size.width);
 }
