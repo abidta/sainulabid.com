@@ -1,22 +1,64 @@
 ---
 title: useipa
-description: A lightweight React hook for managing API calls and forms — loading, error and response state without the boilerplate.
+description: A small React hook library that handles API calls and form submissions for you — loading, errors and response data in one place, built on Axios.
 repository: abidta/useipa
+url: https://www.npmjs.com/package/useipa
 date: 2025-09-25
 published: true
 ---
 
-`useipa` is a small React hook library for handling API calls and form
-submissions. It keeps request state — loading, error, and response data — in one
-place so components stay free of repetitive `useState`/`useEffect` plumbing.
+Almost every React component that talks to an API ends up with the same lines:
+one `useState` for the data, one for the loading flag, one for the error, a
+`useEffect` to start the request, and a `try/catch` to hold it all together.
+Write that twenty times and it turns into noise — and every copy is slightly
+different.
 
-## What it does
+I wrote `useipa` to make that boilerplate go away. You call one hook, and it
+gives you the request state along with the functions that start a request.
 
-- Manages loading, error and data state for any async API call
-- Handles form submission flows, including validation errors returned by the API
-- Works with `axios` or `fetch`
-- Written in TypeScript, tested with Jest
+```jsx
+const { data, fetching, error, fetchData } = useApi()
+
+useEffect(() => {
+  fetchData('/users')
+}, [fetchData])
+
+if (fetching) return <p>Loading…</p>
+if (error) return <p>Something went wrong: {error.message}</p>
+```
+
+## What's in it
+
+- **`useApi`** — the core hook. `fetchData` for reading (GET by default) and
+  `mutate` for writing (POST by default), plus four pieces of state: `data`,
+  `fetching`, `error` and `success`. `clearState` resets them.
+- **`useFormApi`** — the same state, with a `submitForm` method for sending
+  form data.
+- **`asyncApi`** — a plain async function for the times you don't need React
+  state, like inside a utility or an event handler.
+- **`ApiClientProvider`** — wrap your app once with a base URL and headers (an
+  auth token, for example), and every hook inside it uses that setup. A single
+  hook can still pass its own config to talk to a different API. The provider
+  also takes app-wide `onSuccess` and `onError` callbacks — handy for showing a
+  toast, or sending the user to the login page when a session expires.
+
+## Small details that matter
+
+- **Requests don't hang forever.** Every request gets a timeout — 60 seconds
+  by default, adjustable per request with `signalTtl`.
+- **Errors keep the server's answer.** When a request fails, `error` carries
+  the HTTP status and the response body, so a component can tell "not found"
+  from "server error" without digging through Axios internals.
+- **Typed.** It's written in TypeScript, and `useApi<User[]>()` gives you a
+  typed `data`.
+
+## How it's built
+
+TypeScript, bundled with tsup and tested with Jest. A GitHub Actions workflow
+builds and tests every push, and publishing a GitHub release ships the new
+version to npm automatically. The repo includes a small Vite example app for
+trying it out.
 
 ## Stack
 
-TypeScript, React, Axios, Jest.
+React, TypeScript, Axios, Jest, tsup.

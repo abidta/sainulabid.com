@@ -1,22 +1,46 @@
 ---
 title: WalkieTalkie
-description: Real-time voice communication app built with Fastify, MongoDB and React — walkie-talkie style push-to-talk on modern web technologies.
+description: An early-stage push-to-talk app for the browser — a Fastify and MongoDB backend with secure login and a live Socket.IO connection, with a React client. Voice comes next.
 repository: abidta/WalkieTalkie
-date: 2025-09-28
+date: 2024-07-29
 published: true
 ---
 
-WalkieTalkie is a real-time communication application built with MongoDB,
-Fastify and React with TypeScript. It provides instant voice communication
-similar to traditional walkie-talkies, delivered entirely over the browser.
+The idea is simple: a walkie-talkie in the browser. Pick a channel, hold a
+button, talk — and everyone on that channel hears you straight away. No calls to
+set up, no meeting links.
 
-## What it does
+This project is at an early stage. So far I've built the foundation the voice
+features will sit on: user accounts, a protected API, and a live two-way
+connection between the browser and the server. The audio itself isn't in yet.
 
-- Push-to-talk voice channels over a persistent real-time connection
-- Fastify backend, chosen for low per-request overhead on high-frequency traffic
-- MongoDB for users, channels and session state
-- TypeScript end to end
+## What's built
+
+- **A Fastify server in TypeScript.** I picked Fastify over Express for its
+  speed and its plugin system. Config, the database, cookies, JWT and the
+  routes are each registered as a plugin, and route files are picked up
+  automatically from a folder.
+- **Sign-up and login.** Passwords are hashed with bcrypt before they're saved,
+  and users are stored in MongoDB through Mongoose.
+- **Sessions in a safe place.** Logging in sets a JWT in an httpOnly cookie,
+  which scripts on the page can't read.
+- **Protected routes.** A hook checks the token on every request to the user
+  routes and turns away anyone without one.
+- **Input checked up front.** Sign-up and login bodies are validated against
+  JSON schemas before the handler runs.
+- **Config checked at startup.** The server refuses to start if the database
+  URL or the JWT secret is missing, instead of failing later in confusing
+  ways.
+- **A live connection.** Socket.IO runs alongside the API, and the React client
+  (Vite and TypeScript) connects and exchanges messages with the server — the
+  same pipe that will carry voice.
+
+## What's next
+
+- Recording audio in the browser while the talk button is held
+- Channels that people can join, so audio only reaches the right listeners
+- Passing audio between users with as little delay as possible
 
 ## Stack
 
-Fastify, MongoDB, React, TypeScript.
+Fastify, TypeScript, MongoDB, Mongoose, Socket.IO, React, Vite.

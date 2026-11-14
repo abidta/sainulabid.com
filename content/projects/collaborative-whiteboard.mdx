@@ -1,22 +1,51 @@
 ---
 title: Collaborative Whiteboard
-description: Real-time collaborative whiteboard where multiple users draw on a shared canvas over WebSockets.
+description: A shared online whiteboard — draw, add shapes and text, and see everyone's changes and cursors live. Built with Node.js, Socket.IO and Fabric.js.
 repository: abidta/collaborative-whiteboard
 url: https://whiteboard-abid.onrender.com/
 date: 2024-07-17
 published: true
 ---
 
-A real-time collaborative whiteboard. Multiple people draw on the same canvas
-and see each other's strokes as they happen, synchronised over a WebSocket
-connection.
+Open the link and you're on a board with everyone else who has it open. Draw
+something and it shows up on their screens. Move your mouse and they see your
+cursor move. It's the kind of tool you reach for when you want to sketch an
+idea with someone instead of describing it.
 
-## What it does
+I built it feature by feature between July 2023 and July 2024.
 
-- Shared drawing canvas synchronised in real time across clients
-- WebSocket transport for low-latency stroke broadcasting
-- Deployed and publicly usable
+## What you can do
+
+- Draw freehand, with your own stroke color and line width
+- Add rectangles, circles and triangles (outlined or filled), and text
+- Select, move, resize and group things — everyone sees the changes
+- Undo and redo, with Ctrl+Z and Ctrl+Y — and undo is shared too
+- Change the board's background color, or clear the board
+- Save the board as a PNG image
+- See how many people are online, and watch their cursors live
+- Use it on phones and tablets as well as with a mouse
+
+## How it works
+
+The board runs on Fabric.js, a library that turns an HTML canvas into shapes
+you can select, move and resize. When someone adds or changes something, their
+browser sends it to a Node.js server over Socket.IO, and the server passes it
+on to everyone else. Cursor positions travel the same way, tagged with each
+person's connection so they can be told apart.
+
+The server is deliberately thin. It doesn't keep a copy of the board — it only
+passes changes along and counts who's connected. That keeps it fast and
+simple. The trade-off: someone who joins late starts with a blank board, and
+the drawing is gone once everyone leaves. Keeping the board's state on the
+server is the obvious next step.
+
+## Built with
+
+An Express and TypeScript backend serves the page (rendered with Handlebars)
+and the real-time connection. The app ships as a Docker image and runs on
+Render's free tier, so the first visit after a quiet spell can take a few
+seconds while the server wakes up.
 
 ## Stack
 
-Node.js, Socket.io, JavaScript, HTML Canvas.
+Node.js, Express, TypeScript, Socket.IO, Fabric.js, HTML Canvas, Docker.
