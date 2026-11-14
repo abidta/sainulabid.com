@@ -1,0 +1,69 @@
+---
+title: denormo
+description: Keep denormalized copies in MongoDB in sync with their source, declaratively — an open source library built on change streams.
+repository: denormo/denormo
+url: https://www.npmjs.com/package/denormo
+date: 2026-11-11
+published: true
+---
+
+In MongoDB you often embed a small copy of one document inside another — the
+author's name and avatar on every post — so reads need no `$lookup`. Then the
+user renames themselves, and every copy is stale. Most teams fix that with
+hand-written `updateMany` calls scattered through the codebase, and sooner or
+later one is forgotten.
+
+`denormo` makes that sync declarative. You say which fields a copy holds; denormo
+watches the source and rewrites the copies when it changes.
+
+```js
+userSchema.plugin(snapshotSource, { expose: ['name', 'avatar'] });
+
+const postSchema = new mongoose.Schema({
+  title: String,
+  createdBy: {
+    type: Snapshot,
+    ref: 'User',
+    fields: { name: { sync: true }, avatar: { sync: true } },
+  },
+});
+
+const sync = await createSync({ connection: mongoose.connection });
+await sync.start();
+```
+
+## How it works
+
+- **Compile, then validate.** Mongoose schemas compile into a plain config of
+  sources and relations. Bad declarations — a field the source does not expose,
+  a reference to an unknown model, a cascade cycle — fail at startup, not in
+  production.
+- **Change streams.** A change to a source arrives as a change event. A pure
+  planner works out which copies are affected and issues one `updateMany` per
+  relation. There is also an inline mode that syncs right after your write.
+- **Version guards instead of locks.** Every copy stores the MongoDB cluster
+  time of the change it reflects. Each update only applies to copies that are
+  not newer, so replayed or late events can never overwrite fresher data.
+- **Resume after restart.** The stream position is saved, so a restarted worker
+  picks up where it stopped.
+- **Copies of copies.** A synced post is itself a change, so feeds that embed
+  posts stay correct too.
+
+## Engineering
+
+- TypeScript monorepo: an ODM-agnostic core that never imports Mongoose, plus a
+  Mongoose adapter. A lint rule enforces the boundary.
+- The planner has no I/O, so the correctness logic is covered by fast unit tests;
+  integration tests run against a real replica set.
+- Published to npm as `denormo` and `@denormo/mongoose`, versioned with
+  Changesets.
+
+## Status
+
+Experimental, 0.x. Sync at any depth, both modes, resume and transactions work
+today. Batching, multiple workers, delete handling and a repair tool are on the
+roadmap.
+
+## Stack
+
+TypeScript, Node.js, MongoDB, Mongoose, Vitest.

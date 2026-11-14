@@ -26,7 +26,9 @@ export async function generateStaticParams(): Promise<Props["params"][]> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const blog = allBlogs.find((blog) => blog.slug === params?.slug);
+  const blog = allBlogs.find(
+    (blog) => blog.slug === params?.slug && blog.published,
+  );
   if (!blog) return {};
 
   const url = `/blogs/${blog.slug}`;
@@ -56,7 +58,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const slug = params?.slug;
-  const blog = allBlogs.find((blog) => blog.slug === slug);
+  const blog = allBlogs.find(
+    (blog) => blog.slug === slug && blog.published,
+  );
 
   if (!blog) {
     notFound();
