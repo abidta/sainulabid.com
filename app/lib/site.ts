@@ -11,7 +11,6 @@ export const siteConfig = {
   socials: {
     github: "https://github.com/abidta",
     twitter: "https://twitter.com/sainul_abid_",
-    website: "https://abidta.github.io",
     linkedin: "https://www.linkedin.com/in/abidta/",
     npm: "https://www.npmjs.com/~sainulabid",
   },
