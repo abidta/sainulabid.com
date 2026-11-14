@@ -12,12 +12,15 @@ export function GET() {
   const published = <T extends { published?: boolean }>(items: T[]) =>
     items.filter((item) => item.published);
 
-  const line = (item: {
-    title: string;
-    description: string;
-    slug: string;
-    date?: string;
-  }, section: string) =>
+  const line = (
+    item: {
+      title: string;
+      description: string;
+      slug: string;
+      date?: string;
+    },
+    section: string,
+  ) =>
     `- [${item.title}](${siteConfig.url}/md/${section}/${item.slug}): ${item.description}`;
 
   const projects = published(allProjects)
@@ -44,16 +47,12 @@ ${siteConfig.name} is a ${siteConfig.jobTitle} based in ${siteConfig.location.re
 
 - [Home](${siteConfig.url}): Overview of ${siteConfig.name}, full stack developer and backend engineer.
 - [Projects](${siteConfig.url}/projects): Web applications, backend services and open source libraries.
-- [Blog](${siteConfig.url}/blogs): Notes on building web applications, backends and APIs.
-- [Contact](${siteConfig.url}/contact): Email, GitHub and X/Twitter.
+${blogs.length ? `- [Blog](${siteConfig.url}/blogs): Notes on building web applications, backends and APIs.\n` : ""}- [Contact](${siteConfig.url}/contact): LinkedIn, email, GitHub and X/Twitter.
 
 ## Projects
 ${projects.length ? projects.join("\n") : "- (none published yet)"}
 
-## Blog
-${blogs.length ? blogs.join("\n") : "- (none published yet)"}
-
-## Optional
+${blogs.length ? `## Blog\n${blogs.join("\n")}\n\n` : ""}## Optional
 
 - [Full text of all pages](${siteConfig.url}/llms-full.txt)
 - [GitHub](${siteConfig.socials.github})

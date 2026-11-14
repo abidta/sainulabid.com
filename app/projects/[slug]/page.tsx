@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { allProjects } from "contentlayer/generated";
@@ -6,7 +7,7 @@ import { Header } from "./header";
 import "./mdx.css";
 import { ReportView } from "./view";
 import { getView } from "@/app/lib/views";
-import { siteConfig, ogImageMeta } from "@/app/lib/site";
+import { siteConfig } from "@/app/lib/site";
 import { jsonLd } from "@/app/lib/json-ld";
 import { breadcrumbNode, graph, personRef } from "@/app/lib/schema";
 
@@ -40,24 +41,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const url = `/projects/${project.slug}`;
+  const title = project.seoTitle ?? project.title;
+  // Social images come from ./opengraph-image.tsx and ./twitter-image.tsx,
+  // which render a card per project.
   return {
-    title: project.title,
+    title,
     description: project.description,
     alternates: { canonical: url },
     openGraph: {
-      title: project.title,
+      title,
       description: project.description,
       url,
       type: "article",
       authors: [siteConfig.name],
-      images: [ogImageMeta],
     },
     twitter: {
       card: "summary_large_image",
       creator: siteConfig.twitterHandle,
-      title: project.title,
+      title,
       description: project.description,
-      images: [ogImageMeta.url],
     },
   };
 }
@@ -73,6 +75,7 @@ export default async function PostPage({ params }: Props) {
   }
 
   const views = await getView("projects", slug);
+  const related = relatedProjects(project.slug);
 
   const projectUrl = `${siteConfig.url}/projects/${project.slug}`;
   const projectSchema = graph(
@@ -106,8 +109,73 @@ export default async function PostPage({ params }: Props) {
       <ReportView slug={project.slug} />
 
       <article className="px-4 py-12 mx-auto prose prose-zinc prose-quoteless">
+        <p className="not-prose mb-10 text-sm text-zinc-500">
+          By{" "}
+          <Link
+            href="/"
+            className="font-medium text-zinc-700 hover:text-zinc-900"
+          >
+            {siteConfig.name}
+          </Link>
+          {project.date ? (
+            <>
+              {" · Started "}
+              <time dateTime={new Date(project.date).toISOString()}>
+                {monthYear(project.date)}
+              </time>
+            </>
+          ) : null}
+        </p>
         <Mdx code={project.body.code} />
       </article>
+
+      {related.length > 0 ? (
+        <nav
+          aria-labelledby="more-projects"
+          className="px-4 pb-16 mx-auto prose prose-zinc"
+        >
+          <h2 id="more-projects">More projects</h2>
+          <ul className="not-prose grid gap-4 p-0 list-none">
+            {related.map((p) => (
+              <li key={p.slug}>
+                <Link
+                  href={`/projects/${p.slug}`}
+                  className="block p-4 duration-200 border rounded-lg border-zinc-200 hover:border-zinc-400 hover:bg-white"
+                >
+                  <span className="block font-medium text-zinc-900">
+                    {p.title}
+                  </span>
+                  <span className="block mt-1 text-sm text-zinc-600">
+                    {p.description}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p>
+            <Link href="/projects">All projects</Link> ·{" "}
+            <Link href="/contact">Get in touch</Link>
+          </p>
+        </nav>
+      ) : null}
     </div>
   );
 }
+
+/** "Jul 2023" — month and year are enough for when a project started. */
+const monthYear = (date: string) =>
+  new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(date));
+
+/** Up to three other published projects, newest first. */
+const relatedProjects = (slug: string) =>
+  allProjects
+    .filter((p) => p.published && p.slug !== slug)
+    .sort(
+      (a, b) =>
+        new Date(b.date ?? 0).getTime() - new Date(a.date ?? 0).getTime(),
+    )
+    .slice(0, 3);

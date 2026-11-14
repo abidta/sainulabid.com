@@ -33,8 +33,17 @@ export const Project = defineDocumentType(() => ({
 			type: "string",
 			required: true,
 		},
+		// When the project started (repo creation). Drives dateCreated and ordering.
 		date: {
 			type: "date",
+		},
+		// When this page or project last changed meaningfully. Drives sitemap lastmod.
+		updated: {
+			type: "date",
+		},
+		// Optional longer, descriptive <title>; the page heading stays `title`.
+		seoTitle: {
+			type: "string",
 		},
 		url: {
 			type: "string",

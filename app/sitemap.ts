@@ -7,10 +7,19 @@ import { hasPublishedBlogs } from "./lib/content";
  * Latest content date in a collection. lastmod must reflect real changes:
  * stamping every URL with the build time teaches search engines to ignore it.
  */
-const latest = (docs: { published?: boolean; date?: string }[]) => {
+type Dated = { published?: boolean; date?: string; updated?: string };
+
+/** When a document last changed: `updated` if set, otherwise its `date`. */
+const changedAt = (doc: Dated) => {
+  const value = doc.updated ?? doc.date;
+  return value ? new Date(value) : undefined;
+};
+
+const latest = (docs: Dated[]) => {
   const times = docs
-    .filter((d) => d.published && d.date)
-    .map((d) => new Date(d.date as string).getTime());
+    .filter((d) => d.published)
+    .map((d) => changedAt(d)?.getTime())
+    .filter((t): t is number => t !== undefined);
   return times.length ? new Date(Math.max(...times)) : undefined;
 };
 
@@ -41,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((p) => p.published)
     .map((p) => ({
       url: `${siteConfig.url}/projects/${p.slug}`,
-      lastModified: p.date ? new Date(p.date) : new Date(),
+      lastModified: changedAt(p),
       priority: 0.7,
     }));
 
@@ -49,7 +58,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((p) => p.published)
     .map((p) => ({
       url: `${siteConfig.url}/blogs/${p.slug}`,
-      lastModified: p.date ? new Date(p.date) : new Date(),
+      lastModified: changedAt(p),
       priority: 0.7,
     }));
 

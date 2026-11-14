@@ -9,6 +9,9 @@ import { getViews } from "../lib/views";
 import { hasPublishedBlogs } from "../lib/content";
 import { siteConfig, ogImageMeta } from "../lib/site";
 import { Eye } from "lucide-react";
+import { showViews } from "../lib/view-display";
+import { jsonLd } from "../lib/json-ld";
+import { breadcrumbNode, graph, personId, websiteId } from "../lib/schema";
 
 export const revalidate = 60;
 
@@ -64,8 +67,31 @@ export default async function ProjectsPage() {
     );
   }
 
+  const collectionSchema = graph({
+    "@type": "CollectionPage",
+    "@id": `${siteConfig.url}/projects#collection`,
+    url: `${siteConfig.url}/projects`,
+    name: `Projects by ${siteConfig.name}`,
+    isPartOf: { "@id": websiteId },
+    author: { "@id": personId },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: published.map((p, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${siteConfig.url}/projects/${p.slug}`,
+        name: p.title,
+      })),
+    },
+    breadcrumb: breadcrumbNode([{ name: "Projects", path: "/projects" }]),
+  });
+
   return (
     <div className="relative pb-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(collectionSchema) }}
+      />
       <Navigation showBlog={hasPublishedBlogs} />
       <div className="px-6 pt-20 mx-auto space-y-8 max-w-7xl lg:px-8 md:space-y-16 md:pt-24 lg:pt-32">
         <div className="max-w-2xl mx-auto lg:mx-0">
@@ -95,12 +121,14 @@ export default async function ProjectsPage() {
                       <span>SOON</span>
                     )}
                   </div>
-                  <span className="flex items-center gap-1 text-xs text-zinc-500">
-                    <Eye className="w-4 h-4" />{" "}
-                    {Intl.NumberFormat("en-US", { notation: "compact" }).format(
-                      views[featured.slug] ?? 0,
-                    )}
-                  </span>
+                  {showViews(views[featured.slug]) && (
+                    <span className="flex items-center gap-1 text-xs text-zinc-500">
+                      <Eye className="w-4 h-4" />{" "}
+                      {Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                      }).format(views[featured.slug] ?? 0)}
+                    </span>
+                  )}
                 </div>
 
                 <h2
