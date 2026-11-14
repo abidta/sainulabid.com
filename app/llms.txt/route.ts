@@ -38,7 +38,7 @@ export function GET() {
 
 > ${siteConfig.description}
 
-${siteConfig.name} is a ${siteConfig.jobTitle} based in ${siteConfig.location.locality}, ${siteConfig.location.country}, available for freelance and contract work. Core stack: ${siteConfig.skills.join(", ")}.
+${siteConfig.name} is a ${siteConfig.jobTitle} based in ${siteConfig.location.region}, ${siteConfig.location.country}, available for freelance and contract work. Core stack: ${siteConfig.skills.join(", ")}.
 
 ## Pages
 

@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { siteConfig, ogImageMeta, sameAs } from "../lib/site";
+import { siteConfig, ogImageMeta } from "../lib/site";
+import {
+  breadcrumbNode,
+  graph,
+  personId,
+  personNode,
+  websiteId,
+} from "../lib/schema";
 import { jsonLd } from "../lib/json-ld";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Get in touch with ${siteConfig.name} — ${siteConfig.jobTitle} based in ${siteConfig.location.locality}, ${siteConfig.location.country}. Available for freelance and contract work.`,
+  description: `Get in touch with ${siteConfig.name} — ${siteConfig.jobTitle} based in ${siteConfig.location.region}, ${siteConfig.location.country}. Available for freelance and contract work.`,
   alternates: { canonical: "/contact" },
   openGraph: {
     title: `Contact | ${siteConfig.name}`,
@@ -13,27 +20,27 @@ export const metadata: Metadata = {
     type: "profile",
     images: [ogImageMeta],
   },
-};
-
-const contactSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfilePage",
-  name: `Contact ${siteConfig.name}`,
-  url: `${siteConfig.url}/contact`,
-  mainEntity: {
-    "@type": "Person",
-    name: siteConfig.name,
-    url: siteConfig.url,
-    jobTitle: siteConfig.jobTitle,
-    email: `mailto:${siteConfig.email}`,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: siteConfig.location.locality,
-      addressCountry: siteConfig.location.country,
-    },
-    sameAs,
+  twitter: {
+    card: "summary_large_image",
+    title: `Contact | ${siteConfig.name}`,
+    description: `Email, GitHub and X/Twitter for ${siteConfig.name}.`,
+    creator: siteConfig.twitterHandle,
+    images: [ogImageMeta.url],
   },
 };
+
+const contactSchema = graph(
+  {
+    "@type": "ContactPage",
+    "@id": `${siteConfig.url}/contact#contactpage`,
+    url: `${siteConfig.url}/contact`,
+    name: `Contact ${siteConfig.name}`,
+    isPartOf: { "@id": websiteId },
+    mainEntity: { "@id": personId },
+    breadcrumb: breadcrumbNode([{ name: "Contact", path: "/contact" }]),
+  },
+  personNode,
+);
 
 export default function ContactLayout({
   children,

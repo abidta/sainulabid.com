@@ -1,41 +1,40 @@
 import Link from "next/link";
 import React from "react";
 import Particles from "./components/particles";
-import { siteConfig, sameAs } from "./lib/site";
+import type { Metadata } from "next";
+import { siteConfig } from "./lib/site";
 import { jsonLd } from "./lib/json-ld";
+import {
+  graph,
+  personId,
+  personNode,
+  websiteId,
+  websiteNode,
+} from "./lib/schema";
+import { hasPublishedBlogs } from "./lib/content";
 
 const navigation = [
   { name: "Projects", href: "/projects" },
   { name: "Contact", href: "/contact" },
-  { name: "Blogs", href: "/blogs" },
+  ...(hasPublishedBlogs ? [{ name: "Blogs", href: "/blogs" }] : []),
 ];
 
-const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: siteConfig.name,
-  url: siteConfig.url,
-  image: `${siteConfig.url}/opengraph-image`,
-  jobTitle: siteConfig.jobTitle,
-  email: `mailto:${siteConfig.email}`,
-  description: siteConfig.description,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: siteConfig.location.locality,
-    addressCountry: siteConfig.location.country,
-  },
-  knowsAbout: siteConfig.skills,
-  sameAs,
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
 };
 
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: siteConfig.name,
-  url: siteConfig.url,
-  description: siteConfig.description,
-  publisher: { "@type": "Person", name: siteConfig.name, url: siteConfig.url },
-};
+const homeSchema = graph(
+  {
+    "@type": "ProfilePage",
+    "@id": `${siteConfig.url}/#profilepage`,
+    url: `${siteConfig.url}/`,
+    name: siteConfig.title,
+    isPartOf: { "@id": websiteId },
+    mainEntity: { "@id": personId },
+  },
+  personNode,
+  websiteNode,
+);
 
 const inlineLink =
   "text-zinc-200 underline underline-offset-4 duration-500 hover:text-white";
@@ -47,10 +46,10 @@ export default function Home() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: jsonLd([personSchema, websiteSchema]),
+            __html: jsonLd(homeSchema),
           }}
         />
-        <nav className="my-16 animate-fade-in">
+        <nav className="my-16 animate-fade-in-fast">
           <ul className="flex items-center justify-center gap-4">
             {navigation.map((item) => (
               <li key={item.href}>
@@ -74,7 +73,7 @@ export default function Home() {
         </h1>
 
         <div className="hidden w-screen h-px animate-glow md:block animate-fade-right bg-gradient-to-r from-zinc-300/0 via-zinc-300/50 to-zinc-300/0" />
-        <div className="my-16 text-center animate-fade-in">
+        <div className="my-16 text-center animate-fade-in-fast">
           <p className="px-6 text-sm text-zinc-500">
             I build web applications end to end — Node.js and TypeScript
             backends, React frontends, and now AI-powered products.{" "}

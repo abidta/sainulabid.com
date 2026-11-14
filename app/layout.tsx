@@ -15,9 +15,6 @@ export const metadata: Metadata = {
   keywords: [...siteConfig.skills],
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: siteConfig.title,
     description: siteConfig.description,
