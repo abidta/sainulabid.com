@@ -3,7 +3,12 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
-export const Navigation: React.FC = () => {
+type NavigationProps = {
+	/** Link the blog only once it has published posts (see app/lib/content.ts). */
+	showBlog: boolean;
+};
+
+export const Navigation: React.FC<NavigationProps> = ({ showBlog }) => {
 	const ref = useRef<HTMLElement>(null);
 	const [isIntersecting, setIntersecting] = useState(true);
 
@@ -40,12 +45,14 @@ export const Navigation: React.FC = () => {
 						>
 							Contact
 						</Link>
-						<Link
-							href="/blogs"
-							className="duration-200 text-zinc-400 hover:text-zinc-100"
-						>
-							Blogs
-						</Link>
+						{showBlog && (
+							<Link
+								href="/blogs"
+								className="duration-200 text-zinc-400 hover:text-zinc-100"
+							>
+								Blogs
+							</Link>
+						)}
 					</div>
 
 					<Link

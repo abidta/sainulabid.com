@@ -38,7 +38,8 @@ module.exports = {
 			},
 			animation: {
 				"fade-in": "fade-in 3s ease-in-out forwards",
-				title: "title 3s ease-out forwards",
+				"fade-in-fast": "fade-in-fast 1s ease-out forwards",
+				title: "title 1.5s ease-out forwards",
 				"fade-left": "fade-left 3s ease-in-out forwards",
 				"fade-right": "fade-right 3s ease-in-out forwards",
 			},
@@ -48,6 +49,14 @@ module.exports = {
 						opacity: "0%",
 					},
 					"75%": {
+						opacity: "0%",
+					},
+					"100%": {
+						opacity: "100%",
+					},
+				},
+				"fade-in-fast": {
+					"0%": {
 						opacity: "0%",
 					},
 					"100%": {
@@ -88,11 +97,7 @@ module.exports = {
 						"letter-spacing": "0.25em",
 						opacity: "0",
 					},
-					"25%": {
-						"line-height": "0%",
-						opacity: "0%",
-					},
-					"80%": {
+					"60%": {
 						opacity: "100%",
 					},
 

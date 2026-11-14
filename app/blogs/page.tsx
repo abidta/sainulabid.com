@@ -6,6 +6,7 @@ import { Navigation } from "../components/nav";
 import { Card } from "../components/card";
 import { Article } from "./article";
 import { getViews } from "../lib/views";
+import { hasPublishedBlogs } from "../lib/content";
 import { siteConfig, ogImageMeta } from "../lib/site";
 import { Eye } from "lucide-react";
 
@@ -15,6 +16,8 @@ export const metadata: Metadata = {
   title: "Blog",
   description: `Notes on building web applications, backends and APIs by ${siteConfig.name}.`,
   alternates: { canonical: "/blogs" },
+  // An empty blog is thin content: keep it out of the index until a post exists.
+  ...(hasPublishedBlogs ? {} : { robots: { index: false, follow: true } }),
   openGraph: {
     title: `Blog | ${siteConfig.name}`,
     description: `Notes on building web applications, backends and APIs by ${siteConfig.name}.`,
@@ -24,6 +27,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    title: `Blog | ${siteConfig.name}`,
+    description: `Notes on building web applications, backends and APIs by ${siteConfig.name}.`,
+    creator: siteConfig.twitterHandle,
     images: [ogImageMeta.url],
   },
 };
@@ -48,7 +54,7 @@ export default async function BlogsPage() {
   if (!featured) {
     return (
       <div className="relative pb-16">
-        <Navigation />
+        <Navigation showBlog={hasPublishedBlogs} />
         <div className="px-6 pt-20 mx-auto max-w-7xl lg:px-8 md:pt-24 lg:pt-32">
           <h1 className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
             Blog
@@ -61,7 +67,7 @@ export default async function BlogsPage() {
 
   return (
     <div className="relative pb-16">
-      <Navigation />
+      <Navigation showBlog={hasPublishedBlogs} />
       <div className="px-6 pt-20 mx-auto space-y-8 max-w-7xl lg:px-8 md:space-y-16 md:pt-24 lg:pt-32">
         <div className="max-w-2xl mx-auto lg:mx-0">
           <h1 className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">

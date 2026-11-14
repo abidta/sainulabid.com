@@ -5,7 +5,7 @@ export const siteConfig = {
   description:
     "Full stack developer in Kerala, India, with 4 years of experience building Node.js and TypeScript backends, React frontends and AI-powered products.",
   jobTitle: "Full Stack Developer",
-  location: { locality: "Kerala", country: "India" },
+  location: { region: "Kerala", country: "India" },
   email: "sainulabidofficial@gmail.com",
   ogImage: "/opengraph-image",
   socials: {

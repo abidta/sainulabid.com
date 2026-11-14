@@ -44,7 +44,7 @@ export function GET() {
 
 > ${siteConfig.description}
 
-${siteConfig.name} is a ${siteConfig.jobTitle} based in ${siteConfig.location.locality}, ${siteConfig.location.country}. Core stack: ${siteConfig.skills.join(", ")}.
+${siteConfig.name} is a ${siteConfig.jobTitle} based in ${siteConfig.location.region}, ${siteConfig.location.country}. Core stack: ${siteConfig.skills.join(", ")}.
 Contact: ${siteConfig.email} · ${siteConfig.socials.linkedin} · ${siteConfig.socials.github} · ${siteConfig.socials.twitter}
 
 ---

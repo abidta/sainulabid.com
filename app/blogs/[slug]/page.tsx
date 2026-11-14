@@ -8,6 +8,7 @@ import { ReportView } from "./view";
 import { getView } from "@/app/lib/views";
 import { siteConfig, ogImageMeta } from "@/app/lib/site";
 import { jsonLd } from "@/app/lib/json-ld";
+import { breadcrumbNode, graph, personRef } from "@/app/lib/schema";
 
 export const revalidate = 60;
 
@@ -41,14 +42,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: blog.description,
       url,
       type: "article",
-      publishedTime: blog.date
-        ? new Date(blog.date).toISOString()
-        : undefined,
+      publishedTime: blog.date ? new Date(blog.date).toISOString() : undefined,
       authors: [siteConfig.name],
       images: [ogImageMeta],
     },
     twitter: {
       card: "summary_large_image",
+      creator: siteConfig.twitterHandle,
       title: blog.title,
       description: blog.description,
       images: [ogImageMeta.url],
@@ -58,9 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const slug = params?.slug;
-  const blog = allBlogs.find(
-    (blog) => blog.slug === slug && blog.published,
-  );
+  const blog = allBlogs.find((blog) => blog.slug === slug && blog.published);
 
   if (!blog) {
     notFound();
@@ -68,29 +66,26 @@ export default async function PostPage({ params }: Props) {
 
   const views = await getView("blogs", slug);
 
-  const articleSchema = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: blog.title,
-    description: blog.description,
-    datePublished: blog.date ? new Date(blog.date).toISOString() : undefined,
-    dateModified: blog.date ? new Date(blog.date).toISOString() : undefined,
-    author: {
-      "@type": "Person",
-      name: siteConfig.name,
-      url: siteConfig.url,
+  const blogUrl = `${siteConfig.url}/blogs/${blog.slug}`;
+  const published = blog.date ? new Date(blog.date).toISOString() : undefined;
+  const articleSchema = graph(
+    {
+      "@type": "BlogPosting",
+      "@id": `${blogUrl}#article`,
+      headline: blog.title,
+      description: blog.description,
+      datePublished: published,
+      dateModified: published,
+      author: personRef,
+      publisher: personRef,
+      mainEntityOfPage: blogUrl,
+      image: `${siteConfig.url}${siteConfig.ogImage}`,
     },
-    publisher: {
-      "@type": "Person",
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${siteConfig.url}/blogs/${blog.slug}`,
-    },
-    image: `${siteConfig.url}/opengraph-image`,
-  };
+    breadcrumbNode([
+      { name: "Blog", path: "/blogs" },
+      { name: blog.title, path: `/blogs/${blog.slug}` },
+    ]),
+  );
 
   return (
     <div className="bg-zinc-50 min-h-screen">

@@ -8,6 +8,7 @@ import { ReportView } from "./view";
 import { getView } from "@/app/lib/views";
 import { siteConfig, ogImageMeta } from "@/app/lib/site";
 import { jsonLd } from "@/app/lib/json-ld";
+import { breadcrumbNode, graph, personRef } from "@/app/lib/schema";
 
 export const revalidate = 60;
 
@@ -46,6 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
+      creator: siteConfig.twitterHandle,
       title: project.title,
       description: project.description,
       images: [ogImageMeta.url],
@@ -65,24 +67,27 @@ export default async function PostPage({ params }: Props) {
 
   const views = await getView("projects", slug);
 
-  const projectSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareSourceCode",
-    name: project.title,
-    description: project.description,
-    url: `${siteConfig.url}/projects/${project.slug}`,
-    codeRepository: project.repository
-      ? `https://github.com/${project.repository}`
-      : undefined,
-    dateCreated: project.date
-      ? new Date(project.date).toISOString()
-      : undefined,
-    author: {
-      "@type": "Person",
-      name: siteConfig.name,
-      url: siteConfig.url,
+  const projectUrl = `${siteConfig.url}/projects/${project.slug}`;
+  const projectSchema = graph(
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": `${projectUrl}#project`,
+      name: project.title,
+      description: project.description,
+      url: projectUrl,
+      codeRepository: project.repository
+        ? `https://github.com/${project.repository}`
+        : undefined,
+      dateCreated: project.date
+        ? new Date(project.date).toISOString()
+        : undefined,
+      author: personRef,
     },
-  };
+    breadcrumbNode([
+      { name: "Projects", path: "/projects" },
+      { name: project.title, path: `/projects/${project.slug}` },
+    ]),
+  );
 
   return (
     <div className="bg-zinc-50 min-h-screen">
