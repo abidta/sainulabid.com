@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
   openGraph: {
     title: `Contact | ${siteConfig.name}`,
-    description: `Email, GitHub and X/Twitter for ${siteConfig.name}.`,
+    description: `LinkedIn, email, GitHub and X/Twitter for ${siteConfig.name}.`,
     url: "/contact",
     type: "profile",
     images: [ogImageMeta],
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `Contact | ${siteConfig.name}`,
-    description: `Email, GitHub and X/Twitter for ${siteConfig.name}.`,
+    description: `LinkedIn, email, GitHub and X/Twitter for ${siteConfig.name}.`,
     creator: siteConfig.twitterHandle,
     images: [ogImageMeta.url],
   },
