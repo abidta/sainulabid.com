@@ -30,7 +30,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const project = allProjects.find(
     (project) => project.slug === params?.slug && project.published,
   );
-  if (!project) return {};
+  // Next 13 does not apply not-found.tsx metadata when notFound() is called
+  // from a page, so describe the 404 here.
+  if (!project) {
+    return {
+      title: "404: Page not found",
+      robots: { index: false, follow: true },
+    };
+  }
 
   const url = `/projects/${project.slug}`;
   return {

@@ -30,7 +30,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blog = allBlogs.find(
     (blog) => blog.slug === params?.slug && blog.published,
   );
-  if (!blog) return {};
+  // Next 13 does not apply not-found.tsx metadata when notFound() is called
+  // from a page, so describe the 404 here.
+  if (!blog) {
+    return {
+      title: "404: Page not found",
+      robots: { index: false, follow: true },
+    };
+  }
 
   const url = `/blogs/${blog.slug}`;
   return {
