@@ -26,7 +26,9 @@ export async function generateStaticParams(): Promise<Props["params"][]> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = allProjects.find((project) => project.slug === params?.slug);
+  const project = allProjects.find(
+    (project) => project.slug === params?.slug && project.published,
+  );
   if (!project) return {};
 
   const url = `/projects/${project.slug}`;
@@ -53,7 +55,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const slug = params?.slug;
-  const project = allProjects.find((project) => project.slug === slug);
+  const project = allProjects.find(
+    (project) => project.slug === slug && project.published,
+  );
 
   if (!project) {
     notFound();

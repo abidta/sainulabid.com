@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig, ogImageMeta } from "../lib/site";
+import { siteConfig, ogImageMeta, sameAs } from "../lib/site";
 import { jsonLd } from "../lib/json-ld";
 
 export const metadata: Metadata = {
@@ -31,11 +31,7 @@ const contactSchema = {
       addressLocality: siteConfig.location.locality,
       addressCountry: siteConfig.location.country,
     },
-    sameAs: [
-      siteConfig.socials.github,
-      siteConfig.socials.twitter,
-      siteConfig.socials.website,
-    ],
+    sameAs,
   },
 };
 

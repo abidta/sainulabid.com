@@ -1,0 +1,79 @@
+---
+title: Llayam
+description: AI decision models as a service — ticket routing, triage and moderation that start zero-shot and improve by fine-tuning on each customer's own corrected data.
+date: 2026-11-12
+published: true
+---
+
+Llayam is a multi-tenant AI SaaS I am building. A business sends a message (a
+support ticket, a chat, a form submission) along with typed questions — *which
+team should handle this?*, *how urgent is it?*, *does it break the rules?* — and
+gets back calibrated decisions with a confidence score for each answer.
+
+Every customer starts on the open-weight Laya base model, so it works zero-shot
+on day one. As people correct its low-confidence answers, those corrections
+become training data, and the customer can fine-tune a model of their own.
+
+## How the AI loop works
+
+1. **Predict.** The API resolves the tenant's active model version and calls the
+   model service, which loads that checkpoint from object storage and keeps it in
+   an in-memory LRU cache.
+2. **Flag what it is unsure about.** Each decision carries the lowest per-answer
+   confidence. Anything below the tenant's own threshold is marked
+   `needs_review` and lands in a review queue.
+3. **Learn from corrections.** A reviewer confirms or corrects the answer in the
+   dashboard. Corrections are exported as labelled training examples.
+4. **Fine-tune, calibrate, evaluate.** A training worker claims the job,
+   fine-tunes on the tenant's examples, checks calibration, and scores the new
+   model against the current one on held-out data — per question, language and
+   label.
+5. **Promote.** The new checkpoint is stored as a *candidate*. An admin compares
+   its metrics with the active model in the dashboard and promotes it. The next
+   training run starts from it.
+
+## Architecture
+
+Four services, each with one job, talking only over HTTP/JSON, a Postgres jobs
+table, or object storage:
+
+- **API** — Node.js, TypeScript and Fastify. Tenants, users, hashed API keys
+  with per-key rate limits, question sets, the decision log, the review queue,
+  model versions and training jobs. The OpenAPI spec is generated from Zod
+  schemas.
+- **Model service** — Python and FastAPI. Stateless; loads models and serves
+  predictions. Inference runs off the event loop, and each model has its own
+  loading lock so one slow load never blocks the others.
+- **Trainer** — a Python worker that claims training jobs with a renewable lease,
+  so a crashed run is picked up again, up to a retry limit. No Redis or queue:
+  a Postgres table is enough at this scale.
+- **Dashboard** — a React single-page app for reviewers and admins: decisions,
+  the review queue, training jobs and model versions.
+
+JSON Schemas in a shared folder are the contract between the TypeScript and
+Python sides; both are kept in sync with them.
+
+## Decisions I care about
+
+- **Privacy by default.** Customer message text is never logged. Storing it is
+  opt-in per tenant, encrypted with AES-256-GCM, and purged once the tenant's
+  retention period ends.
+- **Humans stay in the loop.** The model only decides on its own above a
+  confidence threshold the customer controls; everything else goes to a person.
+- **No model goes live unreviewed.** Fine-tuned models are candidates until an
+  admin promotes them on the evidence of their evaluation metrics.
+- **Written-down architecture.** Every significant decision is recorded as an
+  ADR — 24 so far, from the service split to session handling.
+- **Boring infrastructure on purpose.** Docker Compose, Postgres and S3-compatible
+  storage. No Kubernetes, no message broker, until real load asks for them.
+
+## Status
+
+In active development. Predictions, multi-tenancy, the review queue, the full
+training pipeline and the dashboard work end to end. Next: the first connector
+and a deployment for a pilot customer.
+
+## Stack
+
+Node.js, TypeScript, Fastify, Zod, PostgreSQL, Python, FastAPI, PyTorch, React,
+Docker, S3-compatible object storage.

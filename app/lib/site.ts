@@ -3,7 +3,7 @@ export const siteConfig = {
   url: "https://sainulabid.com",
   title: "Sainul Abid — Full Stack Developer | Backend Engineer",
   description:
-    "Full stack developer in Kerala, India. I build web applications end to end — Node.js and TypeScript backends, REST APIs and React frontends.",
+    "Full stack developer in Kerala, India, with 4 years of experience building Node.js and TypeScript backends, React frontends and AI-powered products.",
   jobTitle: "Full Stack Developer",
   location: { locality: "Kerala", country: "India" },
   email: "sainulabidofficial@gmail.com",
@@ -12,6 +12,8 @@ export const siteConfig = {
     github: "https://github.com/abidta",
     twitter: "https://twitter.com/sainul_abid_",
     website: "https://abidta.github.io",
+    linkedin: "https://www.linkedin.com/in/abidta/",
+    npm: "https://www.npmjs.com/~sainulabid",
   },
   twitterHandle: "@sainul_abid_",
   skills: [
@@ -20,6 +22,7 @@ export const siteConfig = {
     "Backend Architecture",
     "API Design",
     "System Design",
+    "Microservices",
     "Node.js",
     "TypeScript",
     "Fastify",
@@ -29,9 +32,26 @@ export const siteConfig = {
     "Next.js",
     "MongoDB",
     "SQL",
+    "Python",
+    "FastAPI",
+    "PostgreSQL",
+    "AI Applications",
+    "Agentic AI",
     "Docker",
+    "DevOps",
+    "CI/CD",
+    "AWS",
+    "Google Cloud",
+    "Microsoft Azure",
   ],
 } as const;
+
+/**
+ * Profiles that identify the same person, for the Person schema's `sameAs`.
+ * Search engines and AI assistants use these links to tie the site to one
+ * entity, so every public profile belongs here.
+ */
+export const sameAs = Object.values(siteConfig.socials);
 
 /**
  * Route-level `openGraph` objects replace the parent's, which drops the

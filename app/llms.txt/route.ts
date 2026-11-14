@@ -57,7 +57,9 @@ ${blogs.length ? blogs.join("\n") : "- (none published yet)"}
 
 - [Full text of all pages](${siteConfig.url}/llms-full.txt)
 - [GitHub](${siteConfig.socials.github})
+- [LinkedIn](${siteConfig.socials.linkedin})
 - [X / Twitter](${siteConfig.socials.twitter})
+- [npm](${siteConfig.socials.npm})
 - [Email](mailto:${siteConfig.email})
 `;
 
