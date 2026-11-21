@@ -110,10 +110,14 @@ export default function Home() {
             Cloud and Azure.
           </p>
           <p>
-            Right now I&apos;m building Llayam, an AI product that gives
-            businesses decision models they can fine-tune on their own data,
-            with a Node.js API and Python services for inference and training. I
-            also publish open source libraries on npm:{" "}
+            Right now I&apos;m building{" "}
+            <Link href="/projects/llayam" className={inlineLink}>
+              Llayam
+            </Link>
+            , an AI product that gives businesses decision models they can
+            fine-tune on their own data, with a Node.js API and Python services
+            for inference and training. I also publish open source libraries on
+            npm:{" "}
             <Link href="/projects/denormo" className={inlineLink}>
               denormo
             </Link>
