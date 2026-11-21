@@ -36,6 +36,13 @@ const homeSchema = graph(
   websiteNode,
 );
 
+const profiles = [
+  { name: "GitHub", href: siteConfig.socials.github },
+  { name: "LinkedIn", href: siteConfig.socials.linkedin },
+  { name: "npm", href: siteConfig.socials.npm },
+  { name: "X", href: siteConfig.socials.twitter },
+];
+
 const inlineLink =
   "text-zinc-200 underline underline-offset-4 duration-500 hover:text-white";
 
@@ -129,6 +136,27 @@ export default function Home() {
             <Link href="/projects/useipa" className={inlineLink}>
               useipa
             </Link>
+            .
+          </p>
+          <p>
+            Find me on{" "}
+            {profiles.map((profile, index) => (
+              <React.Fragment key={profile.href}>
+                {index > 0
+                  ? index === profiles.length - 1
+                    ? " and "
+                    : ", "
+                  : null}
+                <a
+                  href={profile.href}
+                  rel="me noopener"
+                  target="_blank"
+                  className={inlineLink}
+                >
+                  {profile.name}
+                </a>
+              </React.Fragment>
+            ))}
             .
           </p>
         </div>
