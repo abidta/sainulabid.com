@@ -3,8 +3,10 @@ import { displayFontName, fontOptions, loadDisplayFont } from "./font";
 
 /**
  * The site icon: a white "S" on near-black, drawn at any square size.
- * Used by app/icon.tsx (favicon, also served at /favicon.ico) and
- * app/apple-icon.tsx (iOS home screen).
+ * Used by app/apple-icon.tsx (iOS home screen). The favicon is the static
+ * app/favicon.ico, rendered from this at 192px and packed with 16/32/48px
+ * sizes. It is a fixed file on purpose: Google asks for a stable favicon URL,
+ * and a generated icon gets a new ?hash URL every time it changes.
  */
 export function brandIcon(px: number) {
   const font = loadDisplayFont();

@@ -32,17 +32,12 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: "*",
+        // One group: every crawler, with the AI crawlers named explicitly.
+        userAgent: ["*", ...aiCrawlers],
         allow: "/",
         disallow: ["/api/"],
       },
-      ...aiCrawlers.map((userAgent) => ({
-        userAgent,
-        allow: "/",
-        disallow: ["/api/"],
-      })),
     ],
     sitemap: `${siteConfig.url}/sitemap.xml`,
-    host: siteConfig.url,
   };
 }

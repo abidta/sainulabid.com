@@ -6,10 +6,10 @@ const nextConfig = {
 	experimental: {
 		mdxRs: true,
 	},
-	// Browsers and some crawlers request /favicon.ico directly. Serve the
-	// generated app/icon.tsx PNG there instead of a 404.
-	async rewrites() {
-		return [{ source: "/favicon.ico", destination: "/icon" }];
+	// The favicon used to be generated at /icon?<hash>. It is now the static
+	// app/favicon.ico (a stable URL, as Google asks). Send the old URL there.
+	async redirects() {
+		return [{ source: "/icon", destination: "/favicon.ico", permanent: true }];
 	},
 	webpack(config) {
 		        config.watchOptions = {

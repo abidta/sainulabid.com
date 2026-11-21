@@ -10,7 +10,7 @@ export const siteConfig = {
   ogImage: "/opengraph-image",
   socials: {
     github: "https://github.com/abidta",
-    twitter: "https://twitter.com/sainul_abid_",
+    twitter: "https://x.com/sainul_abid_",
     linkedin: "https://www.linkedin.com/in/abidta/",
     npm: "https://www.npmjs.com/~sainulabid",
   },

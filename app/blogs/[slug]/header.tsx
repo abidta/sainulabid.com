@@ -1,6 +1,7 @@
 "use client";
-import { ArrowLeft, Eye, Github, Twitter } from "lucide-react";
+import { ArrowLeft, Eye, Github, Twitter, Linkedin } from "lucide-react";
 import { showViews } from "@/app/lib/view-display";
+import { siteConfig } from "@/app/lib/site";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -70,7 +71,7 @@ export const Header: React.FC<Props> = ({ blog, views }) => {
 								)}
 							</span>
 						)}
-						<Link target="_blank" href="https://twitter.com/sainul_abid_">
+						<Link target="_blank" rel="me noopener" aria-label="X / Twitter" href={siteConfig.socials.twitter}>
 							<Twitter
 								className={`w-6 h-6 duration-200 hover:font-medium ${
 									isIntersecting
@@ -79,7 +80,16 @@ export const Header: React.FC<Props> = ({ blog, views }) => {
 								} `}
 							/>
 						</Link>
-						<Link target="_blank" href="https://github.com/abidta">
+						<Link target="_blank" rel="me noopener" aria-label="LinkedIn" href={siteConfig.socials.linkedin}>
+							<Linkedin
+								className={`w-6 h-6 duration-200 hover:font-medium ${
+									isIntersecting
+										? " text-zinc-400 hover:text-zinc-100"
+										: "text-zinc-600 hover:text-zinc-900"
+								} `}
+							/>
+						</Link>
+						<Link target="_blank" rel="me noopener" aria-label="GitHub" href={siteConfig.socials.github}>
 							<Github
 								className={`w-6 h-6 duration-200 hover:font-medium ${
 									isIntersecting
